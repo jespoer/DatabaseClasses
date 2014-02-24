@@ -6,10 +6,7 @@
 	hej
 	
 	<?php
-	
-		phpinfo();
-		ini_set('display_errors', 'on');
-		include('connection.php');
+		include_once('connection.php');
 		
 		$db = new Connection();
 		
@@ -45,7 +42,7 @@
 		echo "Update 11: ".$db->update_row(TBL_IDB, array('username'), array('jew'), array('id'), array())."<br>";
 		echo "Update 12: ".$db->update_row(TBL_IDB, array('username'), array('jew'), array('id'), array(3))."<br>";
 		echo "Update 13: ".$db->update_row(TBL_IDB, array('username'), array('jew'), array('password'), array('aa'))."<br>";
-		echo "Update 14: ".$db->update_row(TBL_IDB, array('username'), array('jew'), array('password'), array('aaa'), array('a')."<br>";
+		echo "Update 14: ".$db->update_row(TBL_IDB, array('username'), array('jew'), array('password'), array('aaa'), array('a'))."<br>";
 		
 		
 		
