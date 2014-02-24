@@ -96,6 +96,8 @@ class Connection{
 	 *		$update_value_array : Array of values which correspond to $update_field_array
 	 *		$array_fields : Array of fields which shall be updated
 	 *		$array_values : Array of values corresponding to $array_fields
+	 *
+	 *		returns -1 on error and otherwise N where N = 0,1,2,.. which corresponds to rows changed
 	 */
 	public function update_row($table, $update_field_array, $update_value_array, $array_fields, $array_values){
 		
@@ -108,10 +110,11 @@ class Connection{
 		}
 		
 		/* create a string that matches the sql syntax for 'where' statements. */
-		$where_statements = $this->combine_query_arrays($update_field_array, $update_value_array, ",");
+		$where_statements = $this->combine_query_arrays($update_field_array, $update_value_array, " AND ");
 		$set_statements = $this->combine_query_arrays($array_fields, $array_values, ",");
 		
 		$this->db_connection->beginTransaction();
+		
 		
 		try{
 			$result = $this->db_connection->exec("UPDATE ".$table." SET ".$set_statements." WHERE ".$where_statements); 
@@ -131,7 +134,11 @@ class Connection{
 	/* -- NUM_ROWS -- Get number of rows matching statement. 
 	 *	Input Params : 
 	 *		$table : Name of database table
-	 *		$count_column : 
+	 *		$count_column : column which shall be counted 
+	 *		$where_field_array : 
+	 *		$where_value_array : 
+	 *
+	 *		returns -1 on error and otherwise N where N = 0,1,2,.. which corresponds to number of rows matched
 	 */
 	public function num_rows($table, $count_column, $where_field_array, $where_value_array){
 		
@@ -163,7 +170,16 @@ class Connection{
 		return $num_rows;
 	} 
 	
-	/* -- GET_VALUE -- returns the requested values in specified fields as an associative array.
+	/* -- GET_VALUE -- returns the requested values from a specific row in a associative array
+	 *	Input Params :
+	 *		$table : Name of database table
+	 *		$array_select_fields :
+	 *		$array_where_fields :
+	 *		$array_where_values :
+	 *		$order_by :
+	 *		$limit :
+	 *
+	 *		returns -1 on error, otherwise the associative array
 	 */
 	public function get_value($table, $array_select_fields, $array_where_fields, $array_where_values, $order_by, $limit){
 	
@@ -215,11 +231,14 @@ class Connection{
 		return $result;
 	} 
 	
+	
 	/*
 	 * PRIVATE FUNCTIONS 
 	 */
 	
-	/* -- COMBINE_QUERY_ARRAYS -- */
+	
+	/* -- COMBINE_QUERY_ARRAYS -- function used to combine arrays of fields and values
+			to match the query statements */
 	private function combine_query_arrays($field_array, $value_array, $combine_string){
 		
 		/* Not same size. This wont work, return error for wrong input */
