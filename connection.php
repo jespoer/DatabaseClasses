@@ -3,8 +3,8 @@
 /* -- Connection -- Class for communicating with database using PDO and mysql
 *	
 * 	@Author: Jesper Westerberg 
-*	@Date: 2013-09-22
-*	@Version 1.2
+*	@Date: 2014-02-24
+*	@Version 1.3
 *
 */
 
