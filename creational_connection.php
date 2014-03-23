@@ -4,7 +4,9 @@
 *	
 * 	@Author: Jesper Westerberg 
 *	@Date: 2014-02-04
-*	@Version 1.2
+*	@Version 1.2.1
+*
+*	Changes 1.2.1 : Added functionality for create_table
 *
 */
 
@@ -27,15 +29,43 @@ class Creational_connection{
 			$pdo_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		
 		}catch(PDOException $exception){
-			echo 'Connection failed due to: ' . $exception->getMessage();	
+			echo 'Connection to database failed due to: ' . $exception->getMessage();	
 		}
 		
 	}
 
 	/* -- CREATE_TABLE -- */
-	public function create_table($name){
-		
+	public function create_table($name, $array_fields){
 	
+		if($name == null || !is_array($array_fields) || func_num_args() != 2){
+			return -1;
+		}
+		
+		$sql = "CREATE TABLE IF NOT EXISTS ".$name."(";
+		
+		/* loop through the fields and add them to sql statement */
+		for($i = 0; $i< count($array_fields); $i++){
+			$sql .= $array_fields[$i];
+			if($i != count($array_fields)-1){
+				$sql .= ", ";
+			}
+		}
+		
+		$sql .= ")";
+		
+		echo $sql;
+		
+		$this->db_connection->beginTransaction();
+		
+		try{
+			$result = $this->db_connection->exec($sql);
+		}catch(PDOException $e){
+			
+			$this->db_connection->rollBack();
+			return -1;
+		}
+		$this->db_connection->commit();
+		return $result;
 	}
 	
 	/* -- DELETE_TABLE -- */
@@ -47,5 +77,7 @@ class Creational_connection{
 	public function copy_table(){
 	
 	}
+	
+}
 	
 	
